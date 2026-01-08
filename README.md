@@ -24,7 +24,7 @@ This tool uses **GPT-4o** to act as a strict, "No-BS" Hiring Manager. It reads t
 ## 🛠️ Installation Guide
 
 ### Step 1: Install Tampermonkey
-1.  Install the [Tampermonkey extension](https://www.tampermonkey.net/) for Chrome, Edge, or Firefox.
+1.  Install the [Tampermonkey extension](https://www.tampermonkey.net/) for Chrome, Edge, or Firefox.（Remember to turn on the developer mode!）
 2.  Click the extension icon -> **Create a New Script**.
 3.  Delete any default code.
 4.  Paste the provided `Career_Agent_v5.3.js` code into the editor.
