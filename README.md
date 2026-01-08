@@ -1,8 +1,4 @@
-没问题，这是为您整理好的 `README.md` 代码块。您可以直接点击右上角的 "Copy" 按钮，然后粘贴到一个文本文件（命名为 `README.md`）中发给您的朋友。
 
-我保留了您要求的语气：**客观、硬核、强调“Asset”资产库的重要性**，并完整嵌入了 Google Sheets 的后端代码。
-
-```markdown
 # 🛡️ The Career Truth Serum: AI Job Auditor
 **(Felix's Career Agent v5.3)**
 
@@ -168,4 +164,4 @@ function doGet(e) {
 
 ```
 
-```
+
