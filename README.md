@@ -1,104 +1,171 @@
-# JobFit-Auditor-TheLinkedin-AI-Hiring-Manager
-🛡️ The Career Truth Serum: AI Job Auditor
-Stop applying blindly. Start auditing reality.
-This is not a resume generator. It is a Personal AI Hiring Manager that lives in your browser.
+没问题，这是为您整理好的 `README.md` 代码块。您可以直接点击右上角的 "Copy" 按钮，然后粘贴到一个文本文件（命名为 `README.md`）中发给您的朋友。
 
-Most people apply for jobs based on their Resume—a marketing document designed to sell. However, you get hired (or rejected) based on your Assets—your true engineering reality, technical debts, trade-offs, and raw experiences.
+我保留了您要求的语气：**客观、硬核、强调“Asset”资产库的重要性**，并完整嵌入了 Google Sheets 的后端代码。
 
-This tool uses GPT-4 to act as a strict, "No-BS" Hiring Manager. It reads the LinkedIn Job Description (JD), compares it against your raw Asset Library, and gives you a brutal, objective probability of success (Phase 0 Audit) before you waste time tailoring a resume.
+```markdown
+# 🛡️ The Career Truth Serum: AI Job Auditor
+**(Felix's Career Agent v5.3)**
 
-🚀 Features
-Phase 0 Audit: Instantly scores your fit (0-100) based on 4 layers: Gut Check, Hard Skills, Soft Skills, and Immigration Risk.
+> **Stop applying blindly. Start auditing reality.**
 
-The "Asset" Philosophy: Evaluates you based on unfiltered reality, not resume keywords.
+This is not a resume generator. It is a **Personal AI Hiring Manager** that lives in your browser.
 
-Auto-Logging: (Optional) Automatically saves every job analysis to a Google Sheet for tracking.
+Most people apply for jobs based on their **Resume**—a marketing document designed to sell. However, you get hired (or rejected) based on your **Assets**—your true engineering reality, technical debts, trade-offs, and raw experiences.
 
-Privacy First: Your data lives in your local script. No third-party servers except OpenAI.
+This tool uses **GPT-4o** to act as a strict, "No-BS" Hiring Manager. It reads the LinkedIn Job Description (JD), compares it against your raw **Asset Library**, and gives you a brutal, objective probability of success (**Phase 0 Audit**) before you waste time tailoring a resume.
 
-🛠️ Installation Guide
-Step 1: Install Tampermonkey
-Install the Tampermonkey extension for Chrome/Edge.
+---
 
-Create a New Script.
+## 🚀 Features
 
-Paste the provided .js code into the editor.
+* **Phase 0 Audit:** Instantly scores your fit (0-100) based on 4 layers: Gut Check, Hard Skills, Soft Skills, and Immigration Risk.
+* **The "Asset" Philosophy:** Evaluates you based on unfiltered reality, not resume keywords.
+* **Auto-Logging:** Automatically saves every job analysis to your Google Sheet for tracking.
+* **Privacy First:** Your data lives in your local script. No third-party servers except OpenAI.
 
-Save (Ctrl+S).
+---
 
-Step 2: Configure Your "Asset Library" (Crucial)
-This is the most important step. inside the code, look for the const ASSET_LIBRARY section.
+## 🛠️ Installation Guide
 
-Do not paste your resume here.
+### Step 1: Install Tampermonkey
+1.  Install the [Tampermonkey extension](https://www.tampermonkey.net/) for Chrome, Edge, or Firefox.
+2.  Click the extension icon -> **Create a New Script**.
+3.  Delete any default code.
+4.  Paste the provided `Career_Agent_v5.3.js` code into the editor.
+5.  Save (Ctrl+S).
 
-Instead, write down your Engineering Reality.
+### Step 2: Configure Your "Asset Library" (CRUCIAL)
+This is the most important step. Inside the script code, look for the `const ASSET_LIBRARY` section.
 
-Example: "I used React, but honestly the state management was a mess," or "I handled 30k users, but the database had a write-lock issue we never fixed."
+* **Do not paste your resume here.**
+* Instead, write down your **Engineering Reality**.
 
-The more honest you are here, the more accurate the AI's prediction will be.
+> **Example:** "I used React, but honestly the state management was a mess," or "I handled 30k users, but the database had a write-lock issue we never fixed."
 
-Step 3: Set Up the Prompt
-Look for const SYSTEM_PROMPT_AUDIT. You need to paste the "Hiring Manager Persona" prompt here. (Ask Felix for the prompt file if it's missing!).
+**Why?** If you lie to the AI here, it will give you a false confidence score. The AI needs to know your "Dirty Laundry" (Technical Debts) to accurately predict if you will be blocked during a technical interview.
 
-📊 (Optional) Google Sheet Auto-Log Setup
-If you want to track every job you analyze in a spreadsheet, follow these steps:
+### Step 3: Set Up the Prompt
+Look for `const SYSTEM_PROMPT_AUDIT`. Ensure the "Hiring Manager Persona" prompt is pasted there. (This defines how strict the AI behaves).
 
-Create a new Google Sheet.
+---
 
-Add headers in Row 1: Date, Company, Job Title, Score, Verdict, Analysis, JD_Snippet.
+## 📊 Google Sheet Auto-Log Setup (Recommended)
 
-Go to Extensions > Apps Script.
+If you want to track every job you analyze in a spreadsheet, follow these steps exactly:
 
-Delete any code there and paste the code below:
+### 1. Prepare the Sheet
+1.  Create a new [Google Sheet](https://sheets.google.com).
+2.  In the first row (**Header**), add these columns exactly in this order:
+    * `Timestamp`
+    * `Company`
+    * `Job Title`
+    * `Verdict`
+    * `Score`
+    * `Analysis`
+    * `JD_Snippet`
 
-JavaScript
+### 2. Add the Script
+1.  In the Google Sheet, go to **Extensions** > **Apps Script**.
+2.  Delete any code in the editor (e.g., `myFunction`).
+3.  Paste the following code **exactly**:
 
+```javascript
 function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    
+    // Check if data exists
+    if (!e || !e.postData || !e.postData.contents) {
+      return ContentService.createTextOutput("Error: No data received");
+    }
+
+    var data = JSON.parse(e.postData.contents);
+    
+    // Append Row
+    sheet.appendRow([
+      new Date(), 
+      data.company || "N/A", 
+      data.job_title || "N/A", 
+      data.verdict || "N/A", 
+      data.score || 0, 
+      data.analysis || "N/A", 
+      data.jd || "N/A"
+    ]);
+    
+    return ContentService.createTextOutput("Success");
+  } catch (err) {
+    console.error("Payload Error: " + err.toString());
+    return ContentService.createTextOutput("Error: " + err.toString());
+  }
+}
+
+function doGet(e) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var data = JSON.parse(e.postData.contents);
+  var data = sheet.getDataRange().getValues();
   
-  sheet.appendRow([
-    new Date(),
-    data.company,
-    data.job_title,
-    data.score,
-    data.verdict,
-    data.analysis,
-    data.jd
-  ]);
+  // Return empty array if sheet is empty
+  if (data.length === 0) {
+    return ContentService.createTextOutput(JSON.stringify([]))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // Assume Row 1 is Header, start reading from Row 2
+  var rows = data.slice(1); 
   
-  return ContentService.createTextOutput(JSON.stringify({"status": "success"}))
+  var result = rows.map(function(row) {
+    // Mapping columns to object keys
+    // [0]Date, [1]Company, [2]JobTitle, [3]Verdict, [4]Score, [5]Analysis, [6]JD
+    return {
+      timestamp: row[0],
+      company: row[1],
+      job_title: row[2],
+      verdict: row[3],
+      score: row[4],
+      analysis: row[5],
+      jd: row[6]
+    };
+  });
+  
+  return ContentService.createTextOutput(JSON.stringify(result))
     .setMimeType(ContentService.MimeType.JSON);
 }
-Click Deploy (Top Right) > New Deployment.
 
-Select type: Web app.
+```
 
-Description: "Job Logger".
+### 3. Deploy (Critical Step)
 
-Execute as: Me.
+1. Click the blue **Deploy** button (Top Right) -> **New Deployment**.
+2. Click the gear icon ⚙️ next to "Select type" -> select **Web app**.
+3. Fill in the details:
+* **Description:** Job Logger v1
+* **Execute as:** Me (your email)
+* **Who has access:** `Anyone` (⚠️ **Important:** Must be "Anyone" so the script can write to it without complex OAuth).
 
-Who has access: Anyone (This is required for the script to write to it).
 
-Click Deploy.
+4. Click **Deploy**.
+5. Copy the **Web App URL** (starts with `https://script.google.com/...`).
+6. Paste this URL into the Tampermonkey script at the top:
+`const GOOGLE_SHEET_WEBHOOK = "YOUR_URL_HERE";`
 
-Copy the Web App URL.
+---
 
-Paste this URL into the Tampermonkey script at: const GOOGLE_SHEET_WEBHOOK = "YOUR_URL_HERE";
+## 💡 How to Use
 
-💡 How to Use
-Go to any LinkedIn Job Page.
+1. Go to any **LinkedIn Job Page** (search results or job detail view).
+2. You will see a panel in the bottom right: `🛡️ Career Agent Audit`.
+3. **First Time Only:** Click `⚙️ Set API Key` and enter your OpenAI API Key (needs `gpt-4o` access).
+4. Click `💀 Phase 0: Audit & Log`.
+5. Read the verdict:
+* ⛔ **STOP:** Don't apply. Structural mismatch.
+* ⚠️ **CONDITIONAL:** You need a referral or a specific narrative spin.
+* ✅ **APPLY:** Strong fit. Go for it.
 
-You will see a panel in the bottom right: "🛡️ Career Agent Audit".
 
-Click "Set API Key" (One time setup, use your OpenAI Key).
 
-Click "Run Audit".
+---
 
-Read the verdict.
+*Authored by Felix & Gemini | v5.3*
 
-⛔ STOP: Don't waste your time.
+```
 
-⚠️ CONDITIONAL: You need a referral or a specific narrative spin.
-
-✅ APPLY: You are a strong fit. Go for it.
+```
