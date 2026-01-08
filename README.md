@@ -130,7 +130,7 @@ function doGet(e) {
 
 ### 3. Deploy (Critical Step)
 
-1. Click the blue **Deploy** button (Top Right) -> **New Deployment**.
+1. Click Save and than click blue **Deploy** button (Top Right) -> **New Deployment**.
 2. Click the gear icon ⚙️ next to "Select type" -> select **Web app**.
 3. Fill in the details:
 * **Description:** Job Logger v1
